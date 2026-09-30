@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+struct Node* insertAtBeginning(struct Node* head, int data) {
+    struct Node* newNode = createNode(data);
+
+    
+    if (head == NULL) {
+        newNode->next = newNode; // Node points to itself to form the circle
+        return newNode;          // This new node becomes the head
+    }
+
+  
+    struct Node* temp = head;
+    while (temp->next != head) {
+        temp = temp->next;
+    }
+
+    newNode->next = head;
+    temp->next = newNode;   
+    head = newNode;         
+
+    return head;
+}
+
+// Function to print the circular linked list
+void printList(struct Node* head) {
+    if (head == NULL) {
+        printf("The list is empty.\n");
+        return;
+    }
+
+    struct Node* temp = head;
+    printf("Circular Linked List: ");
+    do {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    } while (temp != head); // Stop when we loop back to the head
+    
+    printf("(head)\n");
+}
+
+// Main function to run the code
+int main() {
+    // Start with an empty list
+    struct Node* head = NULL;
+
+    printf("Inserting 30 at the beginning...\n");
+    head = insertAtBeginning(head, 30);
+    printList(head); // Expected: 30 -> (head)
+
+    printf("Inserting 20 at the beginning...\n");
+    head = insertAtBeginning(head, 20);
+    printList(head); // Expected: 20 -> 30 -> (head)
+
+    printf("Inserting 10 at the beginning...\n");
+    head = insertAtBeginning(head, 10);
+    printList(head); // Expected: 10 -> 20 -> 30 -> (head)
+
+    return 0;
+}
